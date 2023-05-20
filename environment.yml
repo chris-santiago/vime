@@ -1,0 +1,21 @@
+name: vime
+channels:
+  - conda-forge
+dependencies:
+  - bzip2=1.0.8
+  - ca-certificates=2023.5.7
+  - libffi=3.4.2
+  - libsqlite=3.42.0
+  - libzlib=1.2.13
+  - ncurses=6.3
+  - openssl=3.1.0
+  - pip=23.1.2
+  - python=3.10.11
+  - readline=8.2
+  - setuptools=67.7.2
+  - tk=8.6.12
+  - tzdata=2023c
+  - wheel=0.40.0
+  - xz=5.2.6
+  - pip:
+    - -r ./requirements.txt
