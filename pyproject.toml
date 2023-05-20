@@ -32,7 +32,7 @@ version = "0.1.0"
 description = "Exploring VIME (Value Imputation and Mask Estimation)"
 readme = "README.md"
 license = { text ="MIT License" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 authors = [
     { name="Chris Santiago", email="cjsantiago@gatech.edu"}
