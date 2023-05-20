@@ -7,21 +7,15 @@ encoder:
   alpha: 0.5
 
 dataloader:
+  _target_: vime.data.MnistData
   batch_size: 128
   n_workers: 10
-  train:
-    batch_size: ${dataloader.batch_size}
-    shuffle: False
-    num_workers: ${dataloader.n_workers}
-  test:
-    batch_size: ${dataloader.batch_size}
-    shuffle: False
-    num_workers: ${dataloader.n_workers}
 
 optimizer:
   encoder:
     _target_: torch.optim.RMSprop
     _partial_: true
+    lr: ${encoder.lr}
 
 trainer:
   epochs: 10

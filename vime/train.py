@@ -3,16 +3,12 @@ import pytorch_lightning as pl
 from encoder import VimeEncoder
 from pytorch_lightning.callbacks.progress import RichProgressBar
 
-import vime.data
-
 
 @hydra.main(config_path="conf", config_name="config", version_base="1.3")
 def main(cfg):
-    data = vime.data.MnistData(
-        batch_size=cfg.dataloader.batch_size, n_workers=cfg.dataloader.n_workers
-    )
+    data = hydra.utils.instantiate(cfg.dataloader)
+    optim = hydra.utils.instantiate(cfg.optimizer.encoder)
 
-    optim = hydra.utils.instantiate(cfg.optimizer.encoder, lr=cfg.encoder.lr)
     model = VimeEncoder(
         hidden_size=cfg.encoder.hidden_size,
         encoder_layers=cfg.encoder.encoder_layers,

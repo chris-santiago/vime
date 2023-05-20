@@ -1,24 +1,33 @@
+import typing as T
+
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
+import torchmetrics
 
 
 class MaskGenerator(nn.Module):
-    def __init__(self, p):
+    """Module for generating Bernoulli mask."""
+
+    def __init__(self, p: float):
         super().__init__()
         self.p = p
 
-    def forward(self, x):
+    def forward(self, x: torch.tensor):
+        """Generate Bernoulli mask."""
         p_mat = torch.ones_like(x) * self.p
         return torch.bernoulli(p_mat)
 
 
 class PretextGenerator(nn.Module):
+    """Module for generating training pretext."""
+
     def __init__(self):
         super().__init__()
 
     @staticmethod
-    def shuffle(x):
+    def shuffle(x: torch.tensor):
+        """Shuffle each column in a tensor."""
         m, n = x.shape
         x_bar = torch.zeros_like(x)
         for i in range(n):
@@ -26,7 +35,8 @@ class PretextGenerator(nn.Module):
             x_bar[:, i] += x[idx, i]
         return x_bar
 
-    def forward(self, x, mask):
+    def forward(self, x: torch.tensor, mask: torch.tensor):
+        """Generate corrupted features and corresponding mask."""
         shuffled = self.shuffle(x)
         corrupt_x = x * (1.0 - mask) + shuffled * mask
         corrupt_mask = 1.0 * (x != corrupt_x)  # ensure float type
@@ -34,7 +44,15 @@ class PretextGenerator(nn.Module):
 
 
 class LinearLayer(nn.Module):
-    def __init__(self, input_size, output_size, batch_norm=False):
+    """
+    Module to create a sequential block consisting of:
+
+        1. Linear layer
+        2. (optional) Batch normalization layer
+        3. ReLu activation layer
+    """
+
+    def __init__(self, input_size: int, output_size: int, batch_norm: bool = False):
         super().__init__()
         self.size_in = input_size
         self.size_out = output_size
@@ -47,20 +65,26 @@ class LinearLayer(nn.Module):
         else:
             self.model = nn.Sequential(nn.Linear(input_size, output_size), nn.ReLU())
 
-    def forward(self, x):
+    def forward(self, x: torch.tensor):
+        """Run inputs through linear block."""
         return self.model(x)
 
 
 class VimeEncoder(pl.LightningModule):
+    """VIME Encoder module for self-supervised learning."""
+
     def __init__(
         self,
-        hidden_size=256,
-        encoder_layers=2,
-        pretext_layers=2,
-        out_size=784,
-        p_mask=0.25,
-        alpha=0.5,
-        optim=None,
+        hidden_size: int = 256,
+        encoder_layers: int = 2,
+        pretext_layers: int = 2,
+        out_size: int = 784,
+        p_mask: float = 0.25,
+        alpha: float = 0.5,
+        optim: T.Optional[
+            T.Callable[[torch.optim.Optimizer], torch.optim.Optimizer]
+        ] = None,
+        score_func: T.Optional[torchmetrics.Metric] = None,
     ):
         super().__init__()
         self.alpha = alpha
@@ -69,6 +93,11 @@ class VimeEncoder(pl.LightningModule):
         self.get_pretext = PretextGenerator()
         self.loss_func_feature = nn.MSELoss()
         self.loss_func_mask = nn.BCELoss()
+        self.score_func = (
+            score_func
+            if score_func
+            else torchmetrics.CosineSimilarity(reduction="mean")
+        )
 
         self.save_hyperparameters()
 
@@ -116,11 +145,20 @@ class VimeEncoder(pl.LightningModule):
         # Note that we calculate loss based on corrupted mask vice original mask because the
         # corrupted mask aligns with corrupted features after shuffling.
         loss_mask = self.loss_func_mask(logits_mask, corrupt_mask)
+        # Note that we implement alpha as a mixing parameter slightly differently that the original
+        # version. The original version applied alpha only to the feature loss, leaving the
+        # mask loss constant.
         total_loss = self.alpha * loss_feature + (1 - self.alpha) * loss_mask
-        self.log(
-            "train_loss",
-            total_loss,
-            on_step=True,
+        score = self.score_func(logits_feature, x)
+        metrics = {
+            "train/loss-feature": loss_feature,
+            "train/loss-mask": loss_mask,
+            "train/loss": total_loss,
+            "train/cosine-similarity": score,
+        }
+        self.log_dict(
+            metrics,
+            on_step=False,
             on_epoch=True,
             prog_bar=True,
             logger=True,
