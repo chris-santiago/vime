@@ -1,4 +1,4 @@
-import pytorch_lightning as L
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 
@@ -51,7 +51,7 @@ class LinearLayer(nn.Module):
         return self.model(x)
 
 
-class VimeEncoder(L.LightningModule):
+class VimeEncoder(pl.LightningModule):
     def __init__(
         self,
         hidden_size=256,

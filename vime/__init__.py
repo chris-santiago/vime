@@ -8,6 +8,7 @@ __version__ = version("vime")
 
 @dataclass(frozen=True)
 class Constants:
+    SEED = 42
     HERE = pathlib.Path(__file__)
     SRC = HERE.parents[0]
     REPO = HERE.parents[1]

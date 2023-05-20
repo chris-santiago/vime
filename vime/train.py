@@ -1,17 +1,16 @@
 import hydra
-import pytorch_lightning as L
+import pytorch_lightning as pl
 from encoder import VimeEncoder
 from pytorch_lightning.callbacks.progress import RichProgressBar
-from torch.utils.data import DataLoader
 
 import vime.data
 
 
 @hydra.main(config_path="conf", config_name="config", version_base="1.3")
 def main(cfg):
-    train, test = vime.data.get_mnist_datasets()
-    train_dl = DataLoader(train, **cfg.dataloader.train)
-    DataLoader(test, **cfg.dataloader.test)
+    data = vime.data.MnistData(
+        batch_size=cfg.dataloader.batch_size, n_workers=cfg.dataloader.n_workers
+    )
 
     optim = hydra.utils.instantiate(cfg.optimizer.encoder, lr=cfg.encoder.lr)
     model = VimeEncoder(
@@ -23,13 +22,13 @@ def main(cfg):
         optim=optim,
     )
 
-    trainer = L.Trainer(
+    trainer = pl.Trainer(
         max_epochs=cfg.trainer.epochs,
         accelerator=cfg.trainer.accelerator,
         devices=cfg.trainer.devices,
         callbacks=[RichProgressBar(refresh_rate=5, leave=True)],
     )
-    trainer.fit(model=model, train_dataloaders=train_dl)
+    trainer.fit(model=model, datamodule=data)
 
 
 if __name__ == "__main__":
