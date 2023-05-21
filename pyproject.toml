@@ -46,6 +46,7 @@ dependencies = [
     "torchvision>=0.15.2",
     "rich>=13.3.5",
     "wandb>=0.15.3",
+    "python-dotenv>=1.0.0",
 ]
 
 
