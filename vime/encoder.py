@@ -93,11 +93,7 @@ class VimeEncoder(pl.LightningModule):
         self.get_pretext = PretextGenerator()
         self.loss_func_feature = nn.MSELoss()
         self.loss_func_mask = nn.BCELoss()
-        self.score_func = (
-            score_func
-            if score_func
-            else torchmetrics.CosineSimilarity(reduction="mean")
-        )
+        self.score_func = score_func
 
         self.save_hyperparameters()
 
@@ -149,18 +145,26 @@ class VimeEncoder(pl.LightningModule):
         # version. The original version applied alpha only to the feature loss, leaving the
         # mask loss constant.
         total_loss = self.alpha * loss_feature + (1 - self.alpha) * loss_mask
-        score = self.score_func(logits_feature, x)
+
+        self.log(
+            "loss", total_loss, on_step=True, on_epoch=True, prog_bar=True, logger=False
+        )
+
         metrics = {
             "train/loss-feature": loss_feature,
             "train/loss-mask": loss_mask,
             "train/loss": total_loss,
-            "train/cosine-similarity": score,
         }
+
+        if self.score_func:
+            score = self.score_func(logits_feature, x)
+            metrics["train/score"] = score
+
         self.log_dict(
             metrics,
             on_step=False,
             on_epoch=True,
-            prog_bar=True,
+            prog_bar=False,
             logger=True,
         )
         return total_loss

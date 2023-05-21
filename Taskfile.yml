@@ -10,6 +10,8 @@ tasks:
 
   train:
     desc: Train a PyTorch model
+    deps:
+      - wandb
     cmds:
       - python vime/train.py -- {{.CLI_ARGS}}
 

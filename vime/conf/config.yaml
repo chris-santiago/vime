@@ -1,5 +1,16 @@
-encoder:
-  lr: 0.01
+# Hydra automatically creates an output directory used to store log files and save yaml configs.
+# This directory can be configured by setting hydra.run.dir (for single hydra runs) or
+# hydra.sweep.dir/hydra.sweep.subdir (for multirun sweeps). At runtime, the path of the output
+# directory can be accessed via the hydra.runtime.output_dir variable.
+
+# Run output directory can contain user configuration variables:
+#     outputs/${now:%Y-%m-%d_%H-%M-%S}/opt:${optimizer.type}
+hydra:
+  run:
+    dir: outputs/${hydra.job.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  _target_: vime.encoder.VimeEncoder
   hidden_size: 128
   encoder_layers: 2
   pretext_layers: 2
@@ -12,12 +23,31 @@ dataloader:
   n_workers: 10
 
 optimizer:
-  encoder:
-    _target_: torch.optim.RMSprop
-    _partial_: true
-    lr: ${encoder.lr}
+  _target_: torch.optim.RMSprop
+  _partial_: true
+  lr: 0.01
 
 trainer:
-  epochs: 10
+  _target_: pytorch_lightning.Trainer
+  max_epochs: 10
   accelerator: mps
   devices: 1
+  callbacks:
+    - _target_: pytorch_lightning.callbacks.RichModelSummary
+    - _target_: pytorch_lightning.callbacks.RichProgressBar
+      refresh_rate: 5
+      leave: True
+    - _target_: pytorch_lightning.callbacks.EarlyStopping
+      monitor: loss
+      min_delta: 0.1
+      patience: 5
+      check_on_train_epoch_end: True
+    - _target_: pytorch_lightning.callbacks.ModelCheckpoint
+      dirpath: ${hydra:runtime.output_dir}/checkpoints
+      monitor: loss
+      save_top_k: 2
+      save_on_train_epoch_end: True
+  logger:
+    _target_: pytorch_lightning.loggers.WandbLogger
+    project: VIME
+    save_dir: ${hydra:runtime.output_dir}
