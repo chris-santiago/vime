@@ -14,7 +14,7 @@ hydra:
 
 defaults:
   - dataloader: mnist
-  - model: mlp
+  - model: learner
   - trainer: default
   - callbacks: default
   - override hydra/launcher: joblib
