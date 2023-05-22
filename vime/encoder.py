@@ -161,14 +161,14 @@ class VimeEncoder(pl.LightningModule):
         )
 
         metrics = {
-            "train/loss-feature": loss_feature,
-            "train/loss-mask": loss_mask,
-            "train/loss": total_loss,
+            "train-loss-feature": loss_feature,
+            "train-loss-mask": loss_mask,
+            "train-loss": total_loss,
         }
 
         if self.score_func:
             score = self.score_func(logits_feature, x)
-            metrics["train/score"] = score
+            metrics["train-score"] = score
 
         self.log_dict(
             metrics,
