@@ -14,17 +14,8 @@ hydra:
 
 defaults:
   - dataloader: mnist
-  - optimizer: adam
+  - model: encoder
   - override hydra/launcher: joblib
-
-model:
-  _target_: vime.encoder.VimeEncoder
-  hidden_size: 128
-  encoder_layers: 3
-  pretext_layers: 2
-  p_mask: 0.15
-  alpha: 0.75
-  batch_norm: True
 
 trainer:
   _target_: pytorch_lightning.Trainer

@@ -1,0 +1,22 @@
+# Defining the optimizer as a group default allows CLI override, e.g.
+# python vime/train.py "optimizer@model.optimizer=sgd"
+defaults:
+  - /optimizer@optimizer: adam
+
+name: vime-encoder
+
+nn:
+  _target_: vime.encoder.VimeEncoder
+  hidden_size: 128
+  encoder_layers: 3
+  pretext_layers: 2
+  p_mask: 0.15
+  alpha: 0.75
+  batch_norm: True
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.1
+  patience: 10
