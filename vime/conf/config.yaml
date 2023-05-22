@@ -8,28 +8,27 @@
 hydra:
   run:
     dir: outputs/${hydra.job.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: multirun
+    subdir: ${hydra.job.override_dirname}
+
+defaults:
+  - dataloader: mnist
+  - optimizer: adam
+  - override hydra/launcher: joblib
 
 model:
   _target_: vime.encoder.VimeEncoder
   hidden_size: 128
-  encoder_layers: 2
+  encoder_layers: 3
   pretext_layers: 2
-  p_mask: 0.33
-  alpha: 0.5
-
-dataloader:
-  _target_: vime.data.MnistData
-  batch_size: 128
-  n_workers: 10
-
-optimizer:
-  _target_: torch.optim.RMSprop
-  _partial_: true
-  lr: 0.01
+  p_mask: 0.15
+  alpha: 0.75
+  batch_norm: True
 
 trainer:
   _target_: pytorch_lightning.Trainer
-  max_epochs: 10
+  max_epochs: 30
   accelerator: mps
   devices: 1
   callbacks:
@@ -39,7 +38,7 @@ trainer:
       leave: True
     - _target_: pytorch_lightning.callbacks.EarlyStopping
       monitor: loss
-      min_delta: 0.1
+      min_delta: 0.001
       patience: 5
       check_on_train_epoch_end: True
     - _target_: pytorch_lightning.callbacks.ModelCheckpoint
@@ -51,3 +50,4 @@ trainer:
     _target_: pytorch_lightning.loggers.WandbLogger
     project: VIME
     save_dir: ${hydra:runtime.output_dir}
+    log_model: True
