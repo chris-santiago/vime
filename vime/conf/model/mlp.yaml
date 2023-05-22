@@ -5,16 +5,14 @@
 defaults:
   - /optimizer@optimizer: adam
 
-name: vime-encoder
+name: vime-mlp
 
 nn:
-  _target_: vime.models.encoder.VimeEncoder
+  _target_: vime.models.mlp.VimeMLP
   hidden_size: 128
-  encoder_layers: 4
-  pretext_layers: 2
-  p_mask: 0.3
-  alpha: 0.75
-  batch_norm: True
+  n_layers: 3
+  out_size: 10
+  batch_norm: False
 
 scheduler:
   _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
