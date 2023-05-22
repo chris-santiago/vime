@@ -47,6 +47,7 @@ dependencies = [
     "rich>=13.3.5",
     "wandb>=0.15.3",
     "python-dotenv>=1.0.0",
+    "hydra-joblib-launcher>=1.2.0",
 ]
 
 

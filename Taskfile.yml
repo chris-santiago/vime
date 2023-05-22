@@ -15,6 +15,12 @@ tasks:
     cmds:
       - python vime/train.py -- {{.CLI_ARGS}}
 
+  train-multi:
+    desc: Launch multiple training jobs
+    # Multirun launcher requires n_workers=0 otherwise it fails
+    cmds:
+      - python vime/train.py --multirun "dataloader.n_workers=0" -- {{.CLI_ARGS}}
+
   wandb:
     desc: Login to Weights & Biases
     cmds:
