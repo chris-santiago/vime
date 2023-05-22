@@ -85,6 +85,7 @@ class VimeEncoder(pl.LightningModule):
             T.Callable[[torch.optim.Optimizer], torch.optim.Optimizer]
         ] = None,
         score_func: T.Optional[torchmetrics.Metric] = None,
+        batch_norm: bool = False,
     ):
         super().__init__()
         self.alpha = alpha
@@ -98,15 +99,24 @@ class VimeEncoder(pl.LightningModule):
         self.save_hyperparameters()
 
         self.encoder_layers = nn.ModuleList(
-            [LinearLayer(hidden_size, hidden_size) for i in range(encoder_layers - 1)]
+            [
+                LinearLayer(hidden_size, hidden_size, batch_norm)
+                for i in range(encoder_layers - 1)
+            ]
         )
 
         self.feature_layers = nn.ModuleList(
-            [LinearLayer(hidden_size, hidden_size) for i in range(pretext_layers - 1)]
+            [
+                LinearLayer(hidden_size, hidden_size, batch_norm)
+                for i in range(pretext_layers - 1)
+            ]
         )
 
         self.mask_layers = nn.ModuleList(
-            [LinearLayer(hidden_size, hidden_size) for i in range(pretext_layers - 1)]
+            [
+                LinearLayer(hidden_size, hidden_size, batch_norm)
+                for i in range(pretext_layers - 1)
+            ]
         )
 
         self.encoder = nn.Sequential(
