@@ -8,6 +8,11 @@ dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
 
 tasks:
 
+  check-config:
+    desc: Check Hydra configuration
+    cmds:
+      - python vime/train.py --cfg all --resolve
+
   train:
     desc: Train a PyTorch model
     deps:
