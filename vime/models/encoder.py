@@ -39,21 +39,21 @@ class VimeEncoder(pl.LightningModule):
         self.encoder_layers = nn.ModuleList(
             [
                 LinearLayer(hidden_size, hidden_size, batch_norm)
-                for i in range(encoder_layers - 1)
+                for _ in range(encoder_layers - 1)
             ]
         )
 
         self.feature_layers = nn.ModuleList(
             [
                 LinearLayer(hidden_size, hidden_size, batch_norm)
-                for i in range(pretext_layers - 1)
+                for _ in range(pretext_layers - 1)
             ]
         )
 
         self.mask_layers = nn.ModuleList(
             [
                 LinearLayer(hidden_size, hidden_size, batch_norm)
-                for i in range(pretext_layers - 1)
+                for _ in range(pretext_layers - 1)
             ]
         )
 
@@ -79,7 +79,7 @@ class VimeEncoder(pl.LightningModule):
         x = self.encoder(x)
         return self.feature_estimator(x), self.mask_estimator(x)
 
-    def encoder(self, x):
+    def encode(self, x):
         self.encoder.eval()
         with torch.no_grad():
             return self.encoder(x)
