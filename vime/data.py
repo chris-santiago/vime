@@ -7,7 +7,25 @@ from torchvision.transforms import Compose, transforms
 from vime import Constants
 
 
+def get_mnist_datasets():
+    """Get transformed MNIST datasets."""
+    flatten = Compose([transforms.ToTensor(), transforms.Lambda(torch.flatten)])
+    train = MNIST(Constants.DATA, train=True, download=True, transform=flatten)
+    test = MNIST(
+        Constants.DATA, train=False, download=True, transform=transforms.ToTensor()
+    )
+    return train, test
+
+
 class MnistData(pl.LightningDataModule):
+    """
+    MNIST DataModule.
+
+    Notes
+    -----
+    The `transforms.ToTensor()` operation scales the data accordingly.
+    """
+
     def __init__(
         self, data_dir: str = Constants.DATA, batch_size: int = 128, n_workers: int = 1
     ):
