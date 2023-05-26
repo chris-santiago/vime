@@ -19,20 +19,18 @@ This initial implementation follows the VIME self-supervised framework to train 
 unlabeled MNIST data, which is then used to train a semi-supervised MLP on a much smaller portion
 of labeled MNIST data. The final model is tested against the standard MNIST test set.
 
-<figure>
-  <img src="static/self-sl-block.png" alt="">
-  <figcaption>Block diagram of the proposed self-supervised learning framework on tabular data. Credit: Yoon et al.</figcaption>
-</figure><br>
+
+![](static/self-sl-block.png)
+*Block diagram of the proposed self-supervised learning framework on tabular data. Credit: Yoon et al.*
 
 
 The final model used only 10% of MNIST training set (n=6,000) as labeled data for the semi-supervised
 learning and reached 93% classification accuracy on the test set.  None of the hyperparameters were 
 optimized for this initial work. 
 
-<figure>
-  <img src="static/semi-sl-block.png" alt="">
-  <figcaption>Block diagram of the proposed semi-supervised learning framework on tabular data.. Credit: Yoon et al.</figcaption>
-</figure><br>
+
+![](static/semi-sl-block.png)
+*Block diagram of the proposed semi-supervised learning framework on tabular data. Credit: Yoon et al.*
 
 
 Full configuration listed in `outputs/vime-encoder/train_self/2023-05-26/10-09-22/.hydra/config.yaml`
