@@ -38,6 +38,8 @@ class VimeLearner(pl.LightningModule):
         self.save_hyperparameters()
 
         # Don't update the encoder
+        # This is redundant...the encoder already calls `.eval()` and `no_grad()` from within
+        # the `.encode()` method.  I just forgot about it.
         for param in self.encoder.parameters():
             param.requires_grad = False
 
