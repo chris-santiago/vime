@@ -37,6 +37,10 @@ class VimeLearner(pl.LightningModule):
 
         self.save_hyperparameters()
 
+        # Don't update the encoder
+        for param in self.encoder.parameters():
+            param.requires_grad = False
+
     def training_step(self, batch, idx):
         x, y = batch
         mask = self.get_mask(x)
