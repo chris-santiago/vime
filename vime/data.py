@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, TensorDataset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, transforms
 
@@ -17,6 +17,28 @@ def get_mnist_datasets():
     return train, test
 
 
+def get_mnist_train(pct_labeled: float = 0.1, labeled: bool = False):
+    data = MNIST(Constants.DATA, train=True, download=True)
+    x = data.data.reshape(-1, 28 * 28) / 255  # reshape and scale
+    y = data.targets
+    n_labeled = int(len(data) * pct_labeled)
+
+    rng = torch.Generator().manual_seed(Constants.SEED)
+    idx = torch.randperm(len(x), generator=rng)
+    if labeled:
+        return TensorDataset(x[idx][:n_labeled], y[idx][:n_labeled])
+    return TensorDataset(x[idx][n_labeled:])
+
+
+def get_mnist_test():
+    data = MNIST(Constants.DATA, train=False, download=True)
+    x = data.data.reshape(-1, 28 * 28) / 255  # reshape and scale
+    y = data.targets
+    return TensorDataset(x, y)
+
+
+# This is old implementation of Lightning DM
+# Now using the TensorDatasets (above) to control labeled/unlabeled data in training set
 class MnistData(pl.LightningDataModule):
     """
     MNIST DataModule.

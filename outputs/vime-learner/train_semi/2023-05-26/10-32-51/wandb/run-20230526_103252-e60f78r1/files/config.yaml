@@ -1,0 +1,90 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.11
+    cli_version: 0.15.3
+    framework: lightning
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1685111572.822067
+    t:
+      1:
+      - 1
+      - 9
+      - 41
+      - 50
+      - 55
+      2:
+      - 1
+      - 9
+      - 41
+      - 50
+      - 55
+      3:
+      - 7
+      - 23
+      4: 3.10.11
+      5: 0.15.3
+      8:
+      - 4
+      - 5
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    - 1: valid-loss-supervised
+      5: 1
+      6:
+      - 1
+    - 1: valid-loss-consistency
+      5: 1
+      6:
+      - 1
+    - 1: valid-loss
+      5: 1
+      6:
+      - 1
+    - 1: valid-score
+      5: 1
+      6:
+      - 1
+    - 1: epoch
+      5: 1
+      6:
+      - 1
+    - 1: train-loss-supervised
+      5: 1
+      6:
+      - 1
+    - 1: train-loss-consistency
+      5: 1
+      6:
+      - 1
+    - 1: train-loss
+      5: 1
+      6:
+      - 1
+    - 1: train-score
+      5: 1
+      6:
+      - 1
+encoder_ckpt:
+  desc: null
+  value: outputs/vime-encoder/train_self/2023-05-26/10-09-22/checkpoints/epoch=38-step=2067.ckpt
+classifier:
+  desc: null
+  value: null
+n_augments:
+  desc: null
+  value: 3
+beta:
+  desc: null
+  value: 0.5
+optim:
+  desc: null
+  value: null
+score_func:
+  desc: null
+  value: null

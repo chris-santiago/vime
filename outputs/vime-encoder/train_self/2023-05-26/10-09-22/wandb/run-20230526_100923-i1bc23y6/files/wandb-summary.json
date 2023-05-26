@@ -1,0 +1,1 @@
+{"train-loss-feature": 0.016744693741202354, "train-loss-mask": 0.17151707410812378, "train-loss": 0.05543778836727142, "epoch": 38, "trainer/global_step": 2066, "_timestamp": 1685110819.935002, "_runtime": 656.5913600921631, "_step": 38, "_wandb": {"runtime": 656}}

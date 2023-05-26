@@ -13,7 +13,7 @@ hydra:
     subdir: ${hydra.job.override_dirname}
 
 defaults:
-  - dataloader: mnist
+  - data: mnist
   - model: learner
   - trainer: default
   - callbacks: default

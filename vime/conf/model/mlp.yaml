@@ -1,5 +1,5 @@
 # Defining the optimizer as a group default allows CLI override, e.g.
-# python vime/train.py "optimizer@model.optimizer=sgd"
+# python vime/train_self.py "optimizer@model.optimizer=sgd"
 #
 # See https://stackoverflow.com/questions/71438040/overwriting-hydra-configuration-groups-from-cli/71439510#71439510
 defaults:

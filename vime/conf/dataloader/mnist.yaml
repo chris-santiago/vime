@@ -1,3 +1,0 @@
-_target_: vime.data.MnistData
-batch_size: 1024
-n_workers: 1

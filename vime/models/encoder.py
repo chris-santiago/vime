@@ -85,7 +85,7 @@ class VimeEncoder(pl.LightningModule):
             return self.encoder(x)
 
     def training_step(self, batch, idx):
-        x, y = batch
+        x = batch[0]  # TensorDataset/DL for only X returns list
         mask = self.get_mask(x)
         corrupt_feature, corrupt_mask = self.get_pretext(x, mask)
         logits_feature, logits_mask = self(corrupt_feature)
