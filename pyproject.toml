@@ -32,7 +32,7 @@ version = "0.1.0"
 description = "Exploring VIME (Value Imputation and Mask Estimation)"
 readme = "README.md"
 license = { text ="MIT License" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 authors = [
     { name="Chris Santiago", email="cjsantiago@gatech.edu"}
@@ -46,6 +46,8 @@ dependencies = [
     "torchvision>=0.15.2",
     "rich>=13.3.5",
     "wandb>=0.15.3",
+    "python-dotenv>=1.0.0",
+    "hydra-joblib-launcher>=1.2.0",
 ]
 
 

@@ -1,0 +1,38 @@
+version: "3"
+
+# You can also ask Task to include .env like files by using the dotenv: setting:
+dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+# If `--` is given in the CLI, all following parameters are added to a special .CLI_ARGS variable.
+# This is useful to forward arguments to another command.
+
+tasks:
+
+  check-config:
+    desc: Check Hydra configuration
+    cmds:
+      - python vime/train_self.py --cfg all --resolve
+
+  train-self:
+    desc: Train the VIME encoder module
+    deps:
+      - wandb
+    cmds:
+      - python vime/train_self.py "model=encoder" "callbacks=encoder" -- {{.CLI_ARGS}}
+
+  train-semi:
+    desc: Train the VIME semi-SL module
+    deps:
+      - wandb
+    cmds:
+      - python vime/train_semi.py "model=learner" -- {{.CLI_ARGS}}
+  train-multi:
+    desc: Launch multiple training jobs
+    # Multirun launcher requires n_workers=0 otherwise it fails
+    cmds:
+      - python vime/train_self.py --multirun "data.n_workers=0" -- {{.CLI_ARGS}}
+
+  wandb:
+    desc: Login to Weights & Biases
+    cmds:
+      - wandb login $WANDB_KEY

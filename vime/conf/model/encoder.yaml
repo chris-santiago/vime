@@ -1,0 +1,24 @@
+# Defining the optimizer as a group default allows CLI override, e.g.
+# python vime/train_self.py "optimizer@model.optimizer=sgd"
+#
+# See https://stackoverflow.com/questions/71438040/overwriting-hydra-configuration-groups-from-cli/71439510#71439510
+defaults:
+  - /optimizer@optimizer: adam
+
+name: vime-encoder
+
+nn:
+  _target_: vime.models.encoder.VimeEncoder
+  hidden_size: 128
+  encoder_layers: 4
+  pretext_layers: 2
+  p_mask: 0.2
+  alpha: 0.75
+  batch_norm: False
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _partial_: true
+  mode: min
+  factor: 0.1
+  patience: 10

@@ -1,0 +1,31 @@
+batch_size: 1024
+n_workers: 10
+pct_labeled: 0.1
+
+unlabeled:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: vime.data.get_mnist_train
+    pct_labeled: ${data.pct_labeled}
+    labeled: False
+  batch_size: ${data.batch_size}
+  shuffle: True
+  num_workers: ${data.n_workers}
+
+labeled:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: vime.data.get_mnist_train
+    pct_labeled: ${data.pct_labeled}
+    labeled: True
+  batch_size: ${data.batch_size}
+  shuffle: True
+  num_workers: ${data.n_workers}
+
+valid:
+  _target_: torch.utils.data.DataLoader
+  dataset:
+    _target_: vime.data.get_mnist_test
+  batch_size: ${data.batch_size}
+  shuffle: False
+  num_workers: ${data.n_workers}
