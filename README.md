@@ -87,7 +87,7 @@ This project is set up to log experiment results with [Weights and Biases](https
 expects an API key within a `.env` file in the root directory:
 
 ```toml
-WANDB_KEY=<my super secret key>
+WANDB_KEY=<my-super-secret-key>
 ```
 
 Users can configure different logger(s) within the `conf/trainer/default.yaml` file.
