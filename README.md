@@ -22,7 +22,7 @@ of labeled MNIST data. The final model is tested against the standard MNIST test
 <figure>
   <img src="static/self-sl-block.png" alt="">
   <figcaption>Block diagram of the proposed self-supervised learning framework on tabular data. Credit: Yoon et al.</figcaption>
-</figure>
+</figure><br>
 
 The final model used only 10% of MNIST training set (n=6,000) as labeled data for the semi-supervised
 learning and reached 93% classification accuracy on the test set.  None of the hyperparameters were 
@@ -31,7 +31,7 @@ optimized for this initial work.
 <figure>
   <img src="static/semi-sl-block.png" alt="">
   <figcaption>Block diagram of the proposed semi-supervised learning framework on tabular data.. Credit: Yoon et al.</figcaption>
-</figure>
+</figure><br>
 
 Full configuration listed in `outputs/vime-encoder/train_self/2023-05-26/10-09-22/.hydra/config.yaml`
 for the self-supervised encoder and in `outputs/vime-learner/train_semi/2023-05-26/10-32-51/.hydra/config.yaml`
