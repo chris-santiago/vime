@@ -1,0 +1,38 @@
+{
+    "os": "macOS-13.4-arm64-arm-64bit",
+    "python": "3.10.11",
+    "heartbeatAt": "2023-05-30T03:31:00.988827",
+    "startedAt": "2023-05-30T03:31:00.490264",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "model=learner",
+        "--",
+        "data.n_labeled=.2"
+    ],
+    "state": "running",
+    "program": "/Users/chrissantiago/Dropbox/GitHub/vime/vime/train_semi.py",
+    "codePath": "vime/train_semi.py",
+    "git": {
+        "remote": "https://github.com/chris-santiago/vime.git",
+        "commit": "5e24d42cae13f79b283e5d8456cf384fdc232b8c"
+    },
+    "email": "cjsantiago@gatech.edu",
+    "root": "/Users/chrissantiago/Dropbox/GitHub/vime",
+    "host": "257-M2Pro.local",
+    "username": "chrissantiago",
+    "executable": "/opt/homebrew/Caskroom/miniforge/base/envs/vime/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 10,
+    "disk": {
+        "total": 1858.1917190551758,
+        "used": 8.444049835205078
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 32.0
+    }
+}

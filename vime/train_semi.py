@@ -1,7 +1,10 @@
+import json
+
 import hydra
 
-import vime.data
-import vime.utils
+import vime
+
+constants = vime.Constants()
 
 
 @hydra.main(config_path="conf", config_name="config", version_base="1.3")
@@ -10,7 +13,7 @@ def main(cfg):
     valid_dl = hydra.utils.instantiate(cfg.data.valid)
     optim = hydra.utils.instantiate(cfg.model.optimizer)
     model = hydra.utils.instantiate(cfg.model.nn, optim=optim)
-    callbacks = vime.utils.instantiate_callbacks(cfg.callbacks)
+    callbacks = vime.instantiate_callbacks(cfg.callbacks)
     trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks)
     trainer.fit(
         model=model,
@@ -18,6 +21,16 @@ def main(cfg):
         val_dataloaders=valid_dl,
     )
     trainer.checkpoint_callback.to_yaml()
+
+    results = {
+        "model": cfg.model.name,
+        "sample_size": cfg.data.n_labeled,
+        "score": trainer.logged_metrics["valid-score"].item(),
+    }
+
+    filepath = constants.REPO.joinpath("outputs", "baselines.txt")
+    with open(filepath, "a") as fp:
+        fp.write(json.dumps(results) + "\n")
 
 
 if __name__ == "__main__":

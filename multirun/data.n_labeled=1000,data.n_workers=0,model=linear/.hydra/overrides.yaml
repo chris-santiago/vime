@@ -1,0 +1,3 @@
+- data.n_workers=0
+- model=linear
+- data.n_labeled=1000

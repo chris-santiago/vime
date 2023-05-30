@@ -56,6 +56,11 @@ dependencies = [
 "Documentation" = "https://chris-santiago.github.io/vime/"
 
 
+[project.optional-dependencies]
+comps = [
+    "scikit-learn>=1.2.2",
+    "xgboost>=1.7.5",
+]
 [tool.setuptools]
 include-package-data = true
 zip-safe = false

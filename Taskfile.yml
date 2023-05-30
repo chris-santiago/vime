@@ -13,6 +13,11 @@ tasks:
     cmds:
       - python vime/train_self.py --cfg all --resolve
 
+  baselines:
+    desc: Train baseline models
+    cmds:
+      - python vime/train_baseline.py --multirun "data.n_workers=0" "model=linear, xgboost" "data.n_labeled=100, 1000, 0.1, 0.2"
+
   train-self:
     desc: Train the VIME encoder module
     deps:
@@ -26,11 +31,18 @@ tasks:
       - wandb
     cmds:
       - python vime/train_semi.py "model=learner" -- {{.CLI_ARGS}}
-  train-multi:
-    desc: Launch multiple training jobs
+
+  train-self-multi:
+    desc: Launch multiple training jobs for self-supervised model
     # Multirun launcher requires n_workers=0 otherwise it fails
     cmds:
       - python vime/train_self.py --multirun "data.n_workers=0" -- {{.CLI_ARGS}}
+
+  train-semi-multi:
+    desc: Launch multiple training jobs for semi-supervised model
+    # Multirun launcher requires n_workers=0 otherwise it fails
+    cmds:
+      - python vime/train_semi.py --multirun "data.n_workers=0" -- {{.CLI_ARGS}}
 
   wandb:
     desc: Login to Weights & Biases

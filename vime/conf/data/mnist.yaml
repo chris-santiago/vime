@@ -1,12 +1,12 @@
 batch_size: 1024
 n_workers: 10
-pct_labeled: 0.1
+n_labeled: 0.1
 
 unlabeled:
   _target_: torch.utils.data.DataLoader
   dataset:
     _target_: vime.data.get_mnist_train
-    pct_labeled: ${data.pct_labeled}
+    n_labeled: ${data.n_labeled}
     labeled: False
   batch_size: ${data.batch_size}
   shuffle: True
@@ -16,7 +16,7 @@ labeled:
   _target_: torch.utils.data.DataLoader
   dataset:
     _target_: vime.data.get_mnist_train
-    pct_labeled: ${data.pct_labeled}
+    n_labeled: ${data.n_labeled}
     labeled: True
   batch_size: ${data.batch_size}
   shuffle: True

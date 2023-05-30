@@ -1,0 +1,3 @@
+- data.n_workers=0
+- model=xgboost
+- data.n_labeled=100
