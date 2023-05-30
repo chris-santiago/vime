@@ -1,0 +1,4 @@
+name: xgboost
+
+estimator:
+  _target_: xgboost.XGBClassifier
