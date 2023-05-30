@@ -23,7 +23,7 @@ def main(cfg):
     score = accuracy_score(y_test, preds)
     results = {
         "model": cfg.model.name,
-        "sample_size": cfg.data.n_labeled,
+        "n_labeled": cfg.data.n_labeled,
         "score": score,
     }
 
