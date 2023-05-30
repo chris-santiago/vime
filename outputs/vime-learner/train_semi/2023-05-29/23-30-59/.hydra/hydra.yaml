@@ -115,20 +115,20 @@ hydra:
       - file
     disable_existing_loggers: false
   env: {}
-  mode: MULTIRUN
+  mode: RUN
   searchpath: []
   callbacks: {}
   output_subdir: .hydra
   overrides:
     hydra:
-    - hydra.mode=MULTIRUN
+    - hydra.mode=RUN
     task:
-    - data.n_workers=0
-    - data.n_labeled=100,1000
+    - model=learner
+    - data.n_labeled=.2
   job:
     name: train_semi
     chdir: null
-    override_dirname: data.n_labeled=100,1000,data.n_workers=0
+    override_dirname: data.n_labeled=.2,model=learner
     id: ???
     num: ???
     config_name: config
@@ -153,7 +153,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: ???
+    output_dir: /Users/chrissantiago/Dropbox/GitHub/vime/outputs/vime-learner/train_semi/2023-05-29/23-30-59
     choices:
       callbacks: default
       trainer: default
@@ -170,94 +170,3 @@ hydra:
       hydra/launcher: joblib
       hydra/output: default
   verbose: false
-data:
-  batch_size: 1024
-  n_workers: 0
-  n_labeled: 0.1
-  unlabeled:
-    _target_: torch.utils.data.DataLoader
-    dataset:
-      _target_: vime.data.get_mnist_train
-      n_labeled: ${data.n_labeled}
-      labeled: false
-    batch_size: ${data.batch_size}
-    shuffle: true
-    num_workers: ${data.n_workers}
-  labeled:
-    _target_: torch.utils.data.DataLoader
-    dataset:
-      _target_: vime.data.get_mnist_train
-      n_labeled: ${data.n_labeled}
-      labeled: true
-    batch_size: ${data.batch_size}
-    shuffle: true
-    num_workers: ${data.n_workers}
-  valid:
-    _target_: torch.utils.data.DataLoader
-    dataset:
-      _target_: vime.data.get_mnist_test
-    batch_size: ${data.batch_size}
-    shuffle: false
-    num_workers: ${data.n_workers}
-model:
-  optimizer:
-    _target_: torch.optim.Adam
-    _partial_: true
-    lr: 0.001
-    betas:
-    - 0.9
-    - 0.999
-    weight_decay: 0
-  name: vime-learner
-  nn:
-    _target_: vime.models.semi.VimeLearner
-    encoder_ckpt: outputs/vime-encoder/train_self/2023-05-26/10-09-22/checkpoints/epoch=38-step=2067.ckpt
-    classifier:
-      _target_: vime.models.mlp.VimeMLP
-      hidden_size: 128
-      n_layers: 3
-      out_size: 10
-      batch_norm: false
-    n_augments: 3
-    beta: 0.5
-    score_func:
-      _target_: torchmetrics.Accuracy
-      task: multiclass
-      num_classes: 10
-  scheduler:
-    _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
-    _partial_: true
-    mode: min
-    factor: 0.1
-    patience: 10
-trainer:
-  _target_: pytorch_lightning.Trainer
-  max_epochs: 100
-  accelerator: mps
-  devices: 1
-  logger:
-    _target_: pytorch_lightning.loggers.WandbLogger
-    project: VIME
-    group: null
-    job_type: null
-    save_dir: ${hydra:runtime.output_dir}
-    log_model: true
-callbacks:
-  model_summary:
-    _target_: pytorch_lightning.callbacks.RichModelSummary
-  progress_bar:
-    _target_: pytorch_lightning.callbacks.RichProgressBar
-    refresh_rate: 5
-    leave: true
-  early_stopping:
-    _target_: pytorch_lightning.callbacks.EarlyStopping
-    monitor: valid-loss
-    min_delta: 0.001
-    patience: 5
-    check_on_train_epoch_end: true
-  model_checkpoint:
-    _target_: pytorch_lightning.callbacks.ModelCheckpoint
-    dirpath: ${hydra:runtime.output_dir}/checkpoints
-    monitor: valid-loss
-    save_top_k: 1
-    save_on_train_epoch_end: true

@@ -1,0 +1,38 @@
+{
+    "os": "macOS-13.4-arm64-arm-64bit",
+    "python": "3.10.11",
+    "heartbeatAt": "2023-05-30T03:10:14.822887",
+    "startedAt": "2023-05-30T03:10:14.330811",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--multirun",
+        "data.n_workers=0",
+        "--",
+        "data.n_labeled=100,1000"
+    ],
+    "state": "running",
+    "program": "-m joblib.externals.loky.backend.popen_loky_posix",
+    "git": {
+        "remote": "https://github.com/chris-santiago/vime.git",
+        "commit": "5e24d42cae13f79b283e5d8456cf384fdc232b8c"
+    },
+    "email": "cjsantiago@gatech.edu",
+    "root": "/Users/chrissantiago/Dropbox/GitHub/vime",
+    "host": "257-M2Pro.local",
+    "username": "chrissantiago",
+    "executable": "/opt/homebrew/Caskroom/miniforge/base/envs/vime/bin/python",
+    "cpu_count": 10,
+    "cpu_count_logical": 10,
+    "disk": {
+        "total": 1858.1917190551758,
+        "used": 8.444049835205078
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 32.0
+    }
+}

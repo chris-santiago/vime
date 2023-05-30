@@ -33,10 +33,16 @@ tasks:
       - python vime/train_semi.py "model=learner" -- {{.CLI_ARGS}}
 
   train-self-multi:
-    desc: Launch multiple training jobs
+    desc: Launch multiple training jobs for self-supervised model
     # Multirun launcher requires n_workers=0 otherwise it fails
     cmds:
       - python vime/train_self.py --multirun "data.n_workers=0" -- {{.CLI_ARGS}}
+
+  train-semi-multi:
+    desc: Launch multiple training jobs for semi-supervised model
+    # Multirun launcher requires n_workers=0 otherwise it fails
+    cmds:
+      - python vime/train_semi.py --multirun "data.n_workers=0" -- {{.CLI_ARGS}}
 
   wandb:
     desc: Login to Weights & Biases

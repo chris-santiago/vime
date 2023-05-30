@@ -1,0 +1,2 @@
+- model=learner
+- data.n_labeled=.2
