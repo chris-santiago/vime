@@ -1,3 +1,5 @@
+import typing as T
+
 import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader, TensorDataset, random_split
@@ -17,13 +19,16 @@ def get_mnist_datasets():
     return train, test
 
 
-def get_mnist_train(pct_labeled: float = 0.1, labeled: bool = False):
+def get_mnist_train(
+    n_labeled: T.Union[float, int] = 0.1, labeled: bool = False, seed=Constants.SEED
+):
     data = MNIST(Constants.DATA, train=True, download=True)
     x = data.data.reshape(-1, 28 * 28) / 255  # reshape and scale
     y = data.targets
-    n_labeled = int(len(data) * pct_labeled)
+    if isinstance(n_labeled, float) and n_labeled < 1.0:
+        n_labeled = int(len(data) * n_labeled)
 
-    rng = torch.Generator().manual_seed(Constants.SEED)
+    rng = torch.Generator().manual_seed(seed)
     idx = torch.randperm(len(x), generator=rng)
     if labeled:
         return TensorDataset(x[idx][:n_labeled], y[idx][:n_labeled])
