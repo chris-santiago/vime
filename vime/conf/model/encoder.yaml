@@ -12,6 +12,8 @@ nn:
   hidden_size: 128
   encoder_layers: 4
   pretext_layers: 2
+  # TODO this should be changed automatically based on chosen dataset
+  out_size: 280
   p_mask: 0.2
   alpha: 0.75
   batch_norm: False

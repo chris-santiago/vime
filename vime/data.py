@@ -69,13 +69,17 @@ def get_blog_data(
     if train:
         if labeled:
             return TensorDataset(
-                torch.tensor(train_x[idx][:n_labeled]),
+                torch.tensor(train_x[idx][:n_labeled], dtype=torch.float32),
                 torch.tensor(train_y[idx][:n_labeled]),
             )
-        return TensorDataset(torch.tensor(train_x[idx][n_labeled:]))
+        return TensorDataset(
+            torch.tensor(train_x[idx][n_labeled:], dtype=torch.float32)
+        )
     test_x, test_y = test_data[:, :-1], (test_data[:, -1] >= 1).astype(int)
     test_x = sc.transform(test_x)
-    return TensorDataset(torch.tensor(test_x), torch.tensor(test_y))
+    return TensorDataset(
+        torch.tensor(test_x, dtype=torch.float32), torch.tensor(test_y)
+    )
 
 
 # This is old implementation of Lightning DM
