@@ -9,7 +9,7 @@ name: vime-learner
 
 nn:
   _target_: vime.models.semi.VimeLearner
-  encoder_ckpt: outputs/vime-encoder/train_self/2023-05-26/10-09-22/checkpoints/epoch=38-step=2067.ckpt
+  encoder_ckpt: outputs/vime-encoder/train_self/2023-06-06/22-40-07/checkpoints/epoch=71-step=3384.ckpt
   classifier:
     _target_: vime.models.mlp.VimeMLP
     hidden_size: 128

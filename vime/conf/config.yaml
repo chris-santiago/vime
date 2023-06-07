@@ -14,9 +14,9 @@ hydra:
 
 defaults:
   - data: blog
-  - model: encoder
+  - model: learner
   - trainer: default
-  - callbacks: encoder
+  - callbacks: default
   # Use experiment configs to add some overrides
   - experiment: null
   # Overrides must be last

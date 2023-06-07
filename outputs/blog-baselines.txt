@@ -6,3 +6,4 @@
 {"model": "xgboost", "n_labeled": 1000, "score": 0.8163693599160545}
 {"model": "xgboost", "n_labeled": 0.1, "score": 0.8309286463798531}
 {"model": "xgboost", "n_labeled": 0.2, "score": 0.8395855194123819}
+{"model": "vime-learner", "n_labeled": 0.1, "score": 0.7414742708206177}
