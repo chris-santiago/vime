@@ -10,8 +10,8 @@ constants = vime.Constants()
 
 @hydra.main(config_path="conf", config_name="config", version_base="1.3")
 def main(cfg):
-    train = vime.get_mnist_train(n_labeled=cfg.data.n_labeled, labeled=True)
-    test = vime.get_mnist_test()
+    train = hydra.utils.instantiate(cfg.data.base_train)
+    test = hydra.utils.instantiate(cfg.data.base_test)
 
     x_train, y_train = train.tensors[0].numpy(), train.tensors[1].numpy()
     x_test, y_test = test.tensors[0].numpy(), test.tensors[1].numpy()
@@ -27,7 +27,7 @@ def main(cfg):
         "score": score,
     }
 
-    filepath = constants.REPO.joinpath("outputs", "baselines.txt")
+    filepath = constants.REPO.joinpath("outputs", f"{cfg.data.name}-baselines.txt")
     with open(filepath, "a") as fp:
         fp.write(json.dumps(results) + "\n")
 

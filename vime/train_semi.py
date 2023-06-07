@@ -28,7 +28,7 @@ def main(cfg):
         "score": trainer.logged_metrics["valid-score"].item(),
     }
 
-    filepath = constants.REPO.joinpath("outputs", "baselines.txt")
+    filepath = constants.REPO.joinpath("outputs", f"{cfg.data.name}-baselines.txt")
     with open(filepath, "a") as fp:
         fp.write(json.dumps(results) + "\n")
 

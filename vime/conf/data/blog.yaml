@@ -1,22 +1,25 @@
 batch_size: 1024
 n_workers: 10
 n_labeled: 0.1
-name: mnist
+name: blog
 
 base_train:
-  _target_: vime.data.get_mnist_train
+  _target_: vime.data.get_blog_data
   n_labeled: ${data.n_labeled}
   labeled: True
+  train: True
 
 base_test:
-  _target_: vime.data.get_mnist_test
+  _target_: vime.data.get_blog_data
+  train: False
 
 unlabeled:
   _target_: torch.utils.data.DataLoader
   dataset:
-    _target_: vime.data.get_mnist_train
+    _target_: vime.data.get_blog_data
     n_labeled: ${data.n_labeled}
     labeled: False
+    train: True
   batch_size: ${data.batch_size}
   shuffle: True
   num_workers: ${data.n_workers}
@@ -24,9 +27,10 @@ unlabeled:
 labeled:
   _target_: torch.utils.data.DataLoader
   dataset:
-    _target_: vime.data.get_mnist_train
+    _target_: vime.data.get_blog_data
     n_labeled: ${data.n_labeled}
     labeled: True
+    train: True
   batch_size: ${data.batch_size}
   shuffle: True
   num_workers: ${data.n_workers}
@@ -34,7 +38,8 @@ labeled:
 valid:
   _target_: torch.utils.data.DataLoader
   dataset:
-    _target_: vime.data.get_mnist_test
+    _target_: vime.data.get_blog_data
+    train: False
   batch_size: ${data.batch_size}
   shuffle: False
   num_workers: ${data.n_workers}

@@ -1,7 +1,9 @@
 import typing as T
 
+import pandas as pd
 import pytorch_lightning as pl
 import torch
+from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, TensorDataset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, transforms
@@ -40,6 +42,40 @@ def get_mnist_test():
     x = data.data.reshape(-1, 28 * 28) / 255  # reshape and scale
     y = data.targets
     return TensorDataset(x, y)
+
+
+def get_blog_data(
+    n_labeled: T.Union[float, int] = 0.1,
+    labeled: bool = False,
+    train: bool = True,
+    seed=Constants.SEED,
+):
+    train_data = pd.read_csv(
+        Constants.DATA.joinpath("blog", "train.csv.gzip"), compression="gzip"
+    ).values
+    test_data = pd.read_csv(
+        Constants.DATA.joinpath("blog", "test.csv.gzip"), compression="gzip"
+    ).values
+
+    train_x, train_y = train_data[:, :-1], (train_data[:, -1] >= 1).astype(int)
+    sc = StandardScaler()
+    train_x = sc.fit_transform(train_x)
+
+    if isinstance(n_labeled, float) and n_labeled < 1.0:
+        n_labeled = int(len(train_data) * n_labeled)
+    rng = torch.Generator().manual_seed(seed)
+    idx = torch.randperm(len(train_x), generator=rng)
+
+    if train:
+        if labeled:
+            return TensorDataset(
+                torch.tensor(train_x[idx][:n_labeled]),
+                torch.tensor(train_y[idx][:n_labeled]),
+            )
+        return TensorDataset(torch.tensor(train_x[idx][n_labeled:]))
+    test_x, test_y = test_data[:, :-1], (test_data[:, -1] >= 1).astype(int)
+    test_x = sc.transform(test_x)
+    return TensorDataset(torch.tensor(test_x), torch.tensor(test_y))
 
 
 # This is old implementation of Lightning DM
