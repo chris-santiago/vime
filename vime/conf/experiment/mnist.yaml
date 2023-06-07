@@ -1,0 +1,11 @@
+# TODO finish implementing
+# @package _global_
+
+defaults:
+  - override /data: mnist
+  - override /model: encoder
+  - override /callbacks: encoder
+  - override /trainer: default
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters

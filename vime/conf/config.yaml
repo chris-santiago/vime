@@ -13,8 +13,12 @@ hydra:
     subdir: ${hydra.job.override_dirname}
 
 defaults:
-  - data: mnist
+  - data: blog
   - model: learner
   - trainer: default
   - callbacks: default
+  # Use experiment configs to add some overrides
+  - experiment: null
+  # Overrides must be last
   - override hydra/launcher: joblib
+

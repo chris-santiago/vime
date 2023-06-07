@@ -2,28 +2,40 @@ data:
   batch_size: 1024
   n_workers: 0
   n_labeled: 1000
+  name: blog
+  base_train:
+    _target_: vime.data.get_blog_data
+    n_labeled: ${data.n_labeled}
+    labeled: true
+    train: true
+  base_test:
+    _target_: vime.data.get_blog_data
+    train: false
   unlabeled:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_train
+      _target_: vime.data.get_blog_data
       n_labeled: ${data.n_labeled}
       labeled: false
+      train: true
     batch_size: ${data.batch_size}
     shuffle: true
     num_workers: ${data.n_workers}
   labeled:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_train
+      _target_: vime.data.get_blog_data
       n_labeled: ${data.n_labeled}
       labeled: true
+      train: true
     batch_size: ${data.batch_size}
     shuffle: true
     num_workers: ${data.n_workers}
   valid:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_test
+      _target_: vime.data.get_blog_data
+      train: false
     batch_size: ${data.batch_size}
     shuffle: false
     num_workers: ${data.n_workers}
@@ -53,13 +65,13 @@ callbacks:
     leave: true
   early_stopping:
     _target_: pytorch_lightning.callbacks.EarlyStopping
-    monitor: valid-loss
+    monitor: train-loss
     min_delta: 0.001
     patience: 5
     check_on_train_epoch_end: true
   model_checkpoint:
     _target_: pytorch_lightning.callbacks.ModelCheckpoint
     dirpath: ${hydra:runtime.output_dir}/checkpoints
-    monitor: valid-loss
+    monitor: train-loss
     save_top_k: 1
     save_on_train_epoch_end: true

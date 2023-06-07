@@ -16,7 +16,7 @@ tasks:
   baselines:
     desc: Train baseline models
     cmds:
-      - python vime/train_baseline.py --multirun "data.n_workers=0" "model=linear, xgboost" "data.n_labeled=100, 1000, 0.1, 0.2"
+      - python vime/train_baseline.py --multirun "data.n_workers=0" "model=linear, xgboost" "data.n_labeled=100, 1000, 0.1, 0.2" -- {{.CLI_ARGS}}
 
   train-self:
     desc: Train the VIME encoder module

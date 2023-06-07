@@ -124,11 +124,13 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - data.n_workers=0
-    - data.n_labeled=100,1000
+    - model=linear, xgboost
+    - data.n_labeled=100, 1000, 0.1, 0.2
   job:
-    name: train_semi
+    name: train_baseline
     chdir: null
-    override_dirname: data.n_labeled=100,1000,data.n_workers=0
+    override_dirname: data.n_labeled=100, 1000, 0.1, 0.2,data.n_workers=0,model=linear,
+      xgboost
     id: ???
     num: ???
     config_name: config
@@ -155,11 +157,12 @@ hydra:
       provider: schema
     output_dir: ???
     choices:
-      callbacks: default
+      experiment: null
+      callbacks: encoder
       trainer: default
-      model: learner
+      model: encoder
       optimizer@model.optimizer: adam
-      data: mnist
+      data: blog
       hydra/env: default
       hydra/callbacks: null
       hydra/job_logging: default
@@ -174,28 +177,40 @@ data:
   batch_size: 1024
   n_workers: 0
   n_labeled: 0.1
+  name: blog
+  base_train:
+    _target_: vime.data.get_blog_data
+    n_labeled: ${data.n_labeled}
+    labeled: true
+    train: true
+  base_test:
+    _target_: vime.data.get_blog_data
+    train: false
   unlabeled:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_train
+      _target_: vime.data.get_blog_data
       n_labeled: ${data.n_labeled}
       labeled: false
+      train: true
     batch_size: ${data.batch_size}
     shuffle: true
     num_workers: ${data.n_workers}
   labeled:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_train
+      _target_: vime.data.get_blog_data
       n_labeled: ${data.n_labeled}
       labeled: true
+      train: true
     batch_size: ${data.batch_size}
     shuffle: true
     num_workers: ${data.n_workers}
   valid:
     _target_: torch.utils.data.DataLoader
     dataset:
-      _target_: vime.data.get_mnist_test
+      _target_: vime.data.get_blog_data
+      train: false
     batch_size: ${data.batch_size}
     shuffle: false
     num_workers: ${data.n_workers}
@@ -208,22 +223,15 @@ model:
     - 0.9
     - 0.999
     weight_decay: 0
-  name: vime-learner
+  name: vime-encoder
   nn:
-    _target_: vime.models.semi.VimeLearner
-    encoder_ckpt: outputs/vime-encoder/train_self/2023-05-26/10-09-22/checkpoints/epoch=38-step=2067.ckpt
-    classifier:
-      _target_: vime.models.mlp.VimeMLP
-      hidden_size: 128
-      n_layers: 3
-      out_size: 10
-      batch_norm: false
-    n_augments: 3
-    beta: 0.5
-    score_func:
-      _target_: torchmetrics.Accuracy
-      task: multiclass
-      num_classes: 10
+    _target_: vime.models.encoder.VimeEncoder
+    hidden_size: 128
+    encoder_layers: 4
+    pretext_layers: 2
+    p_mask: 0.2
+    alpha: 0.75
+    batch_norm: false
   scheduler:
     _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
     _partial_: true
@@ -251,13 +259,13 @@ callbacks:
     leave: true
   early_stopping:
     _target_: pytorch_lightning.callbacks.EarlyStopping
-    monitor: valid-loss
+    monitor: train-loss
     min_delta: 0.001
     patience: 5
     check_on_train_epoch_end: true
   model_checkpoint:
     _target_: pytorch_lightning.callbacks.ModelCheckpoint
     dirpath: ${hydra:runtime.output_dir}/checkpoints
-    monitor: valid-loss
+    monitor: train-loss
     save_top_k: 1
     save_on_train_epoch_end: true

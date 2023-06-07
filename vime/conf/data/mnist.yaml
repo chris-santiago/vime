@@ -1,6 +1,15 @@
 batch_size: 1024
 n_workers: 10
 n_labeled: 0.1
+name: mnist
+
+base_train:
+  _target_: vime.data.get_mnist_train
+  n_labeled: ${data.n_labeled}
+  labeled: True
+
+base_test:
+  _target_: vime.data.get_mnist_test
 
 unlabeled:
   _target_: torch.utils.data.DataLoader

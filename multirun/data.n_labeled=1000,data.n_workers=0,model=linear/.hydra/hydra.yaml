@@ -156,10 +156,11 @@ hydra:
       provider: schema
     output_dir: /Users/chrissantiago/Dropbox/GitHub/vime/multirun/data.n_labeled=1000,data.n_workers=0,model=linear
     choices:
-      callbacks: default
+      experiment: null
+      callbacks: encoder
       trainer: default
       model: linear
-      data: mnist
+      data: blog
       hydra/env: default
       hydra/callbacks: null
       hydra/job_logging: default

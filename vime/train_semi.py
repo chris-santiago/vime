@@ -24,11 +24,11 @@ def main(cfg):
 
     results = {
         "model": cfg.model.name,
-        "sample_size": cfg.data.n_labeled,
+        "n_labeled": cfg.data.n_labeled,
         "score": trainer.logged_metrics["valid-score"].item(),
     }
 
-    filepath = constants.REPO.joinpath("outputs", "baselines.txt")
+    filepath = constants.REPO.joinpath("outputs", f"{cfg.data.name}-baselines.txt")
     with open(filepath, "a") as fp:
         fp.write(json.dumps(results) + "\n")
 
